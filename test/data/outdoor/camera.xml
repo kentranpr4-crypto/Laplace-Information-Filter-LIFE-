@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<!-- camera.xml schema version 1: see Camera.h for field documentation -->
+<format_version>1</format_version>
+<image_width>2688</image_width>
+<image_height>1512</image_height>
+<camera_matrix type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    2236.3786155465668 0. 1343.5 0. 2237.9439697374846 755.5 0. 0. 1.</data></camera_matrix>
+<distortion_coefficients type_id="opencv-matrix">
+  <rows>1</rows>
+  <cols>5</cols>
+  <dt>d</dt>
+  <data>
+    0.019420091242966293 -0.044741964789271914 -0.0016997400828661037
+    0.00049662901949469335 0.055666055688484511</data></distortion_coefficients>
+<distortion_model>opencv-standard-5</distortion_model>
+<body_to_camera_rotation type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>3</cols>
+  <dt>d</dt>
+  <data>
+    0. 0. 1. 1. 0. 0. 0. 1. 0.</data></body_to_camera_rotation>
+<body_to_camera_position type_id="opencv-matrix">
+  <rows>3</rows>
+  <cols>1</cols>
+  <dt>d</dt>
+  <data>
+    0. 0. 0.</data></body_to_camera_position>
+<rms_reprojection_error_px>0.66706229221661162</rms_reprojection_error_px>
+<num_views>60</num_views>
+<num_points>4200</num_points>
+<board_inner_corners_cols>10</board_inner_corners_cols>
+<board_inner_corners_rows>7</board_inner_corners_rows>
+<square_size_m>0.021999999999999999</square_size_m>
+<source_video>calibration.MOV</source_video>
+</opencv_storage>

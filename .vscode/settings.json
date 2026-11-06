@@ -1,0 +1,12 @@
+{
+    "cmake.configureSettings": {
+        "BUILD_DOCUMENTATION": "ON"
+    },
+    // Uncomment for MSYS2
+    // "cmake.generator": "Ninja",
+    // "cmake.cmakePath": "C:/msys64/clang64/bin/cmake.exe",
+    // "cmake.environment": {
+    //     "PATH": "C:/msys64/clang64/bin;C:/msys64/usr/bin;${env:PATH}",
+    //     "CLICOLOR_FORCE": "1",
+    // },
+}

@@ -1,0 +1,27 @@
+# CMake build directory
+build/
+# Release build directory (scripts/build.sh Release)
+build-release/
+# Probe / scratch build trees (scripts/cmake-probe via verify-env.sh) if ever created in-tree
+build-probe/
+
+# Doxygen output (generated into the source tree when BUILD_DOCUMENTATION is ON)
+docs/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editor/IDE
+.vs/
+*.swp
+*.swo
+
+# Stray compile_commands.json symlinked/copied to project root by some IDEs
+/compile_commands.json
+
+# MATLAB editor autosave files
+*.asv

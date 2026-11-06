@@ -1,0 +1,79 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Application",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": ["-s=6", "-i=0", "-e", "../data/indoor/room.MOV"], // Set command line arguments for debugging here
+            "stopAtEntry": false,
+            "cwd": "${command:cmake.launchTargetDirectory}",
+            "osx": {
+                "externalConsole": false,
+                "MIMode": "lldb",
+            },
+            "linux": {
+                "externalConsole": false,
+                "MIMode": "gdb",
+            },
+            "windows": {
+                "externalConsole": false,
+                "MIMode": "gdb",
+                "miDebuggerPath": "${command:cmake.buildkit.gdb.exe}",
+                "environment": [
+                    {
+                        "name": "PATH",
+                        "value": "${command:cmake.buildkit.launch.path}"
+                    }
+                ],            
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) Tests",
+            "type": "cppdbg",
+            "request": "launch",
+            // "program": "${command:cmake.launchTargetPath}",
+            "program": "${command:cmake.getLaunchTargetDirectory}/tests",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "osx": {
+                "externalConsole": false,
+                "MIMode": "lldb",
+            },
+            "linux": {
+                "externalConsole": false,
+                "MIMode": "gdb",
+            },
+            "windows": {
+                "externalConsole": false,
+                "MIMode": "gdb",
+                "miDebuggerPath": "${command:cmake.buildkit.gdb.exe}",
+                "environment": [
+                    {
+                        "name": "PATH",
+                        "value": "${command:cmake.buildkit.launch.path}"
+                    }
+                ],            
+            },
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ]
+}

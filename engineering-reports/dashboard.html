@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A2 Progress Board</title>
+<style>
+/* Layout: one status bar, a task table, then tests and scenario runs side by side */
+:root {
+  --bg: #f3f4f1; --panel: #ffffff; --fg: #1d2420; --muted: #5d6a63; --line: #d9ddd6;
+  --accent: #1f6f5c; --done: #1f7a4d; --run: #b26a00; --pend: #6b7680; --block: #b3261e;
+  --track: #e4e8e2;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131815; --panel: #1b221e; --fg: #e6ece8; --muted: #93a39a; --line: #2c3631;
+    --accent: #4fc3a1; --done: #5fcf8f; --run: #f0b04a; --pend: #8a959d; --block: #ff8a80;
+    --track: #2a342f; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131815; --panel: #1b221e; --fg: #e6ece8; --muted: #93a39a; --line: #2c3631;
+  --accent: #4fc3a1; --done: #5fcf8f; --run: #f0b04a; --pend: #8a959d; --block: #ff8a80;
+  --track: #2a342f; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--f-body); margin: 0;
+  padding-block: 20px; padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1040px; margin: 0 auto; display: grid; gap: 16px; }
+header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+h1 { font: 600 26px/1.1 var(--f-display); letter-spacing: .01em; margin: 0; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 13px; }
+.live { font: 12px var(--f-mono); color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--pend); }
+.dot.ok { background: var(--done); } .dot.bad { background: var(--block); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px; min-width: 0; }
+h2 { font: 600 12px var(--f-body); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 12px; }
+.overall { display: grid; gap: 10px; }
+.big { font: 600 34px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.bar { height: 10px; background: var(--track); border-radius: 5px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); }
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 640px; }
+th { text-align: left; font: 600 11px var(--f-body); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 0 10px 8px 0; }
+td { padding: 10px 10px 10px 0; border-top: 1px solid var(--line); vertical-align: top; }
+td.id { font: 12px var(--f-mono); color: var(--muted); white-space: nowrap; }
+.pill { font: 600 11px var(--f-body); padding: 2px 8px; border-radius: 10px; border: 1px solid currentColor; white-space: nowrap; }
+.s-done { color: var(--done); } .s-running { color: var(--run); } .s-pending { color: var(--pend); } .s-blocked { color: var(--block); }
+.mini { width: 84px; height: 6px; background: var(--track); border-radius: 3px; overflow: hidden; margin-top: 6px; }
+.mini > i { display: block; height: 100%; background: currentColor; }
+.note { color: var(--muted); font-size: 12px; }
+.evid { font: 12px var(--f-mono); color: var(--muted); }
+.grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0; }
+.kv dt { color: var(--muted); } .kv dd { margin: 0; font: 13px var(--f-mono); text-align: right; font-variant-numeric: tabular-nums; }
+ul { margin: 0; padding-left: 18px; } li { margin: 2px 0; }
+.empty { color: var(--muted); font-style: italic; }
+button { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>MCHA4400 A2 Progress Board</h1>
+      <div class="sub" id="milestone">Đang tải trạng thái…</div>
+    </div>
+    <div class="live"><span class="dot" id="dot"></span><span id="stamp">chưa có dữ liệu</span>
+      <button id="refresh" type="button">Làm mới</button></div>
+  </header>
+
+  <section class="panel overall" aria-label="Tổng quan">
+    <h2>Tổng tiến độ</h2>
+    <div class="big" id="overall">0%</div>
+    <div class="bar"><i id="overallBar" style="width:0%"></i></div>
+    <div class="note" id="counts"></div>
+  </section>
+
+  <section class="panel" aria-label="Công việc">
+    <h2>Công việc</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Mã</th><th>Việc</th><th>Người làm</th><th>Trạng thái</th><th>Bằng chứng</th></tr></thead>
+      <tbody id="tasks"></tbody>
+    </table></div>
+  </section>
+
+  <div class="grid">
+    <section class="panel" aria-label="Kiểm thử">
+      <h2>Kiểm thử (doctest)</h2>
+      <dl class="kv" id="tests"></dl>
+    </section>
+    <section class="panel" aria-label="Kịch bản">
+      <h2>Chạy trên video thật</h2>
+      <dl class="kv" id="scen"></dl>
+    </section>
+    <section class="panel" aria-label="Vướng mắc">
+      <h2>Vướng mắc</h2>
+      <ul id="blockers"></ul>
+      <h2 style="margin-top:16px">Chưa kiểm chứng</h2>
+      <ul id="untested"></ul>
+    </section>
+  </div>
+</main>
+<script>
+(function () {
+  var LABEL = { done: "Xong", running: "Đang làm", pending: "Chờ", blocked: "Bị chặn" };
+  function el(id) { return document.getElementById(id); }
+  function text(tag, cls, s) { var n = document.createElement(tag); if (cls) n.className = cls; n.textContent = s == null ? "" : s; return n; }
+  function pct(t) { return t.status === "done" ? 100 : Math.max(0, Math.min(100, +t.percent || 0)); }
+
+  function render(d) {
+    el("milestone").textContent = "Cột mốc hiện tại: " + (d.milestone || "—");
+    el("stamp").textContent = "cập nhật " + (d.updated || "?");
+    el("dot").className = "dot ok";
+    var tasks = d.tasks || [], sum = 0, n = {};
+    tasks.forEach(function (t) { sum += pct(t); n[t.status] = (n[t.status] || 0) + 1; });
+    var all = tasks.length ? Math.round(sum / tasks.length) : 0;
+    el("overall").textContent = all + "%";
+    el("overallBar").style.width = all + "%";
+    el("counts").textContent = ["done", "running", "pending", "blocked"].map(function (k) { return LABEL[k] + ": " + (n[k] || 0); }).join("  ·  ");
+
+    var body = el("tasks"); body.replaceChildren();
+    tasks.forEach(function (t) {
+      var tr = document.createElement("tr");
+      tr.appendChild(text("td", "id", t.id));
+      var c = document.createElement("td");
+      c.appendChild(text("div", "", t.name));
+      if (t.notes) c.appendChild(text("div", "note", t.notes));
+      tr.appendChild(c);
+      tr.appendChild(text("td", "", t.owner));
+      var s = document.createElement("td");
+      s.className = "s-" + t.status;
+      s.appendChild(text("span", "pill", LABEL[t.status] || t.status));
+      var m = document.createElement("div"); m.className = "mini";
+      var i = document.createElement("i"); i.style.width = pct(t) + "%"; m.appendChild(i); s.appendChild(m);
+      tr.appendChild(s);
+      tr.appendChild(text("td", "evid", t.evidence || "—"));
+      body.appendChild(tr);
+    });
+
+    var T = d.tests || {}, tt = el("tests"); tt.replaceChildren();
+    [["Ca kiểm thử", T.cases], ["Assertion", T.assertions], ["Đạt", T.passed]].forEach(function (r) {
+      tt.appendChild(text("dt", "", r[0])); tt.appendChild(text("dd", "", r[1] == null ? "—" : r[1]));
+    });
+
+    var S = d.scenarios || {}, sc = el("scen"); sc.replaceChildren();
+    [["s4", "Scenario 4 Flight"], ["s5", "Scenario 5 Tags"], ["s6", "Scenario 6 Room"]].forEach(function (k) {
+      var v = S[k[0]] || {};
+      var line = (v.status || "—") + (v.runtime_s != null ? " · " + v.runtime_s + " s" : "") + (v.frames ? " · " + v.frames + " khung" : "");
+      sc.appendChild(text("dt", "", k[1])); sc.appendChild(text("dd", "", line));
+    });
+
+    function fill(id, arr, empty) {
+      var u = el(id); u.replaceChildren();
+      if (!arr || !arr.length) { u.appendChild(text("li", "empty", empty)); return; }
+      arr.forEach(function (x) { u.appendChild(text("li", "", x)); });
+    }
+    fill("blockers", d.blockers, "Không có");
+    fill("untested", d.untested, "Không có");
+  }
+
+  function load() {
+    fetch("status.json?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(render)
+      .catch(function (e) {
+        el("dot").className = "dot bad";
+        el("stamp").textContent = "không đọc được status.json (" + e.message + ")";
+      });
+  }
+  el("refresh").addEventListener("click", load);
+  load();
+  setInterval(load, 5000);
+})();
+</script>
+</body>
+</html>

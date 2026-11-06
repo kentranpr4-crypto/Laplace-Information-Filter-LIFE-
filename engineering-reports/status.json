@@ -1,0 +1,131 @@
+{
+  "updated": "2026-11-06 22:10 (all milestones complete)",
+  "milestone": "DONE (S6 quality INADEQUATE, reported)",
+  "tasks": [
+    {
+      "id": "M1",
+      "name": "Native toolchain/env + scripts + README",
+      "owner": "peer-env",
+      "status": "done",
+      "percent": 100,
+      "evidence": "verify-env.sh 76 PASS/3 known FAIL (pre-B1); probe build OK",
+      "notes": "Boost 1.88, autodiff 1.1.2 by user decision"
+    },
+    {
+      "id": "M2-CORE",
+      "name": "GaussianInfo/system/measurement core",
+      "owner": "peer-core",
+      "status": "done",
+      "percent": 100,
+      "evidence": "Debug suite 64/64 cases (M2)",
+      "notes": "C1 tiny-dt guard + C2 sqrt eigen-factor update + funcmin Cholesky fast path DONE (COREFIX peer); 12 regression tests"
+    },
+    {
+      "id": "M2-CAM",
+      "name": "Camera, calibration, SRT",
+      "owner": "peer-cam",
+      "status": "done",
+      "percent": 100,
+      "evidence": "camera.xml outdoor RMS 0.667 px, indoor 1.118 px",
+      "notes": "open: C3 SRT float timestamps"
+    },
+    {
+      "id": "M3-VIS",
+      "name": "VTK plot, frame loop, export, BufferedVideo tests",
+      "owner": "P-VIS",
+      "status": "done",
+      "percent": 100,
+      "evidence": "EGL offscreen; CLI plot 38 ms (S5) / 53 ms (S6) mean",
+      "notes": "CLI plot 340-670 ms/frame with DISPLAY=:1 (Mesa); perf fix in round 3"
+    },
+    {
+      "id": "M3-S4",
+      "name": "Scenario 4 flight",
+      "owner": "P-S4",
+      "status": "done",
+      "percent": 100,
+      "evidence": "CLI Release ../data --scenario=4 -e: exit 0, 9161 frames 5376x1512 59.94 fps reopened; 1000 s wall, 108.6 ms/frame mean (under concurrent Peer load)",
+      "notes": "heading unobservable; NIS mis-calibrated (R4-06/07)"
+    },
+    {
+      "id": "M3-S6",
+      "name": "Scenario 6 room point SLAM + block STM perf",
+      "owner": "P-S56",
+      "status": "done",
+      "percent": 100,
+      "evidence": "R5 cheirality: behind-camera 54%->6.7%; mean map 8.4 landmarks; lifetime median 7 frames; walking T3 0.134 m > 0.10 m",
+      "notes": "FINAL VERDICT INADEQUATE (user rule: one round only)"
+    },
+    {
+      "id": "M3-S5",
+      "name": "Scenario 5 identical-ID ArUco SLAM",
+      "owner": "P-S56",
+      "status": "done",
+      "percent": 100,
+      "evidence": "CLI Release ../data: exit 0, 1074 frames 3840x1080, 102 ms/frame mean",
+      "notes": "tag 0.15 m ASSUMED; residual identity churn"
+    },
+    {
+      "id": "M3-INT",
+      "name": "Integrated a2 CLI runs (Release, ../data paths)",
+      "owner": "Lead",
+      "status": "done",
+      "percent": 100,
+      "evidence": "CLI ../data runs from build-release for all three scenarios",
+      "notes": ""
+    },
+    {
+      "id": "M4",
+      "name": "Five-pass review, Release benchmarks, 6 reports",
+      "owner": "Lead + review Peer",
+      "status": "done",
+      "percent": 100,
+      "evidence": "Idle Release CLI benchmarks S4/S5/S6 exit 0, exports reopened; six reports written",
+      "notes": ""
+    },
+    {
+      "id": "LEAD-FIX",
+      "name": "Debug NDEBUG leak from HDF5 targets; main.cpp try/catch",
+      "owner": "Lead",
+      "status": "done",
+      "percent": 100,
+      "evidence": "Debug DEFINES now without NDEBUG; suite 178 cases/177 pass with assertions live (224.5 s)",
+      "notes": ""
+    }
+  ],
+  "tests": {
+    "cases": 244,
+    "assertions": 8515,
+    "passed": 243,
+    "build": "Debug and Release (frozen tree)",
+    "suite_time_s": 82.8,
+    "failing": [
+      "S6WalkingCamera.cpp:296 (honest S6 quality gap)"
+    ],
+    "release_suite_time_s": 24.3
+  },
+  "scenarios": {
+    "s4": {
+      "status": "done; acceptable within observability limits; NIS not consistent",
+      "runtime_s": 1541.6,
+      "frames": 9161
+    },
+    "s5": {
+      "status": "done; usable; tag size ASSUMED",
+      "runtime_s": 117.3,
+      "frames": 1074
+    },
+    "s6": {
+      "status": "done; quality INADEQUATE (final)",
+      "runtime_s": 158.2,
+      "frames": 1470
+    }
+  },
+  "blockers": [],
+  "untested": [
+    "clean-machine install",
+    "Doxygen build",
+    "interactive modes 1/2 beyond smoke",
+    "ASan/UBSan on final tree"
+  ]
+}

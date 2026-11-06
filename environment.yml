@@ -1,0 +1,50 @@
+# MCHA4400 Assignment 2 - native (no Docker, no root) toolchain + dependencies.
+#
+# Installed into an isolated prefix (default: $HOME/opt/mcha4400-a2) by
+#   scripts/setup-env.sh
+# which uses micromamba (conda-forge) and the explicit lock file
+#   scripts/conda-lock-linux-64.txt   (exact package URLs + md5; preferred for rebuilds)
+# or, to re-solve from this spec, `scripts/setup-env.sh --from-spec`.
+#
+# All versions are exact (==). Build strings are pinned where the version alone is ambiguous.
+#
+# BOOST DEVIATION (see README "Known blockers"): the project asks for Boost 1.74. Boost 1.74 cannot be
+# used here: (a) conda-forge boost-cpp 1.74.0 pins icu 70 / zstd 1.4 and does not co-install with
+# cmake 3.31 / OpenCV 5 / VTK 9.5, and (b) the conda-forge VTK 9.5.2 CMake config calls
+# find_package(Boost 1.88.0 EXACT) when find_package(VTK REQUIRED) runs, so any 1.74 configure fails.
+# Therefore libboost-devel 1.88.0 is installed (its BoostConfig.cmake is required because the project's
+# cmake_minimum_required(3.31) disables the FindBoost module). find_package(Boost 1.74) accepts it; the
+# project only uses header-only Boost Math, so no Boost library is linked.
+name: mcha4400-a2
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  # --- compiler / C++ runtime (GCC 14 is required for std::print) ---
+  - gxx_linux-64 ==14.4.0
+  - gcc_linux-64 ==14.4.0
+  - libstdcxx ==14.4.0      # runtime matches the compiler; avoids libstdc++ 15/16 pulled by some OpenCV builds
+  - libgcc ==14.4.0
+  - python ==3.12.14        # runtime for vtk-base / onnxruntime-cpp / doxygen packages
+  # --- build tools ---
+  - cmake ==3.31.8          # project requires cmake_minimum_required 3.31
+  - ninja ==1.13.2
+  - pkg-config
+  # --- project dependencies ---
+  - libopencv ==5.0.0=headless_h8197073_0   # OpenCV 5.0.0 headless (no GUI backend), ffmpeg 8.1.x, hdf5 1.14 (VTK-compatible)
+  - eigen ==5.0.1
+  - vtk-base ==9.5.2=py312h6fba518_7        # C++ VTK 9.5.2 (no Python wrapping used by the project)
+  - vtk-io-ffmpeg ==9.5.2=py312hcdbd8b1_7   # VTK::IOFFMPEG module referenced by VTK's own CMake config
+  - libgl-devel ==1.7.0=ha4b6fd6_5          # OpenGL headers + libGL (VTK rendering; as in the 'vtk' metapackage)
+  - libopengl-devel ==1.7.0=ha4b6fd6_5      # libOpenGL.so + GLVND config for FindOpenGL
+  - libxml2-devel ==2.15.3=h49c6c72_1       # libxml2 headers + libxml2.so symlink (VTK's FindLibXml2); avoids system libxml2 2.9
+  - zlib ==1.3.2=h25fd6f3_3                  # zlib.h + libz.so (VTK's FindZLIB, REQUIRED); matches libzlib 1.3.2
+  - expat ==2.8.1=hecca717_1                 # expat headers; VTK FindEXPAT requires >= 2.5.0; build with libgcc 14 (2.9.x needs libgcc 15)
+  - liblzma-devel ==5.8.3=hb03c661_1         # lzma.h + liblzma.so (VTK FindLZMA, REQUIRED); system liblzma is 5.2.5
+  - viskores ==1.1.1=cpu_hc82bd48_1          # VTK's VTKm accelerator dependency; CPU build (CUDA build makes VTK's config call enable_language(CUDA), no nvcc here)
+  - tbb-devel ==2022.3.0=h51de99f_2         # TBB 2022.3 headers + libs (VTK FindTBB); libgcc-14 build; OpenVINO 2026.2 (OpenCV) needs >= 2022.3
+  - autodiff ==1.1.2                        # NOTE: project asks for 1.1.3, which does not exist upstream
+  - doctest ==2.5.3
+  - libboost-devel ==1.88.0=hfcd1e18_7      # Boost 1.88.0 + BoostConfig.cmake (CMake 3.31 policy CMP0167 needs config files); VTK requires 1.88.0 EXACT
+  - onnxruntime-cpp ==1.28.0=hc421db2_0_cpu  # C++ SDK (headers + CMake config); the python 'onnxruntime' package has neither
+  - doxygen ==1.17.0                        # optional (BUILD_DOCUMENTATION)
