@@ -8,7 +8,7 @@
 #
 # All versions are exact (==). Build strings are pinned where the version alone is ambiguous.
 #
-# BOOST DEVIATION (see README "Known blockers"): the project asks for Boost 1.74. Boost 1.74 cannot be
+# BOOST DEVIATION (see ENVIRONMENT.md "Known blockers"): the project asks for Boost 1.74. Boost 1.74 cannot be
 # used here: (a) conda-forge boost-cpp 1.74.0 pins icu 70 / zstd 1.4 and does not co-install with
 # cmake 3.31 / OpenCV 5 / VTK 9.5, and (b) the conda-forge VTK 9.5.2 CMake config calls
 # find_package(Boost 1.88.0 EXACT) when find_package(VTK REQUIRED) runs, so any 1.74 configure fails.

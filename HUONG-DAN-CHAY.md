@@ -1,7 +1,7 @@
 # Hướng dẫn chạy MCHA4400 Assignment 2 trên máy khác (Ubuntu thuần và WSL2)
 
 Tài liệu này hướng dẫn cài môi trường, build, test và chạy ba scenario (4: bay, 5: tag giống nhau, 6: phòng) trên một máy khác.
-Mọi lệnh dùng script có sẵn trong `scripts/`. Chi tiết kỹ thuật nằm trong `README.md` và `engineering-reports/`.
+Mọi lệnh dùng script có sẵn trong `scripts/`. Chi tiết kỹ thuật nằm trong `ENVIRONMENT.md` và `engineering-reports/`.
 
 ## 0. Đọc trước: cái gì đã kiểm chứng, cái gì chưa
 
@@ -221,7 +221,7 @@ Tất cả chưa kiểm tra. Lưu ý quan trọng:
 | `environment.yml`, `scripts/conda-lock-linux-64.txt` | phiên bản cố định của toàn bộ gói |
 | `engineering-reports/` | `plan`, `architecture`, `test-report`, `code-review`, `performance`, `final-report` và `status.json` |
 | `out/` | video xuất và thời gian từng khung |
-| `README.md` | tài liệu kỹ thuật đầy đủ về môi trường |
+| `ENVIRONMENT.md` | tài liệu kỹ thuật đầy đủ về môi trường |
 
 ## 11. Hạn chế đã biết của dự án
 

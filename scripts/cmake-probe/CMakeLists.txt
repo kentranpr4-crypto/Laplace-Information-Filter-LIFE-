@@ -2,7 +2,7 @@
 # a2/CMakeLists.txt, with the same version numbers, and builds a C++23 smoke program against them.
 #
 # It exists so that dependency discovery can be verified without the full a2 build (which also
-# needs FetchContent of nanobench and the autodiff 1.1.3 requirement, see README "Known blockers").
+# needs FetchContent of nanobench and the autodiff 1.1.3 requirement, see ENVIRONMENT.md "Known blockers").
 #
 # autodiff is NOT looked up unless A2_PROBE_AUTODIFF_VERSION is set. The a2 project requests
 # 1.1.3, which does not exist upstream; verify-env.sh configures this probe twice (1.1.3 expected

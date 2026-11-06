@@ -51,7 +51,7 @@ EXPECT_CMAKE="3.31.8"
 EXPECT_NINJA="1.13.2"
 EXPECT_DOXYGEN="1.17.0"
 EXPECT_OPENCV="5.0.0"
-EXPECT_EIGEN="5.0.1"              # EIGEN_VERSION_STRING of the conda build is "5.0.1-dev" (see README)
+EXPECT_EIGEN="5.0.1"              # EIGEN_VERSION_STRING of the conda build is "5.0.1-dev" (see ENVIRONMENT.md)
 EXPECT_VTK="9.5.2"
 EXPECT_BOOST_MIN="1.74"           # what CMakeLists.txt requires (find_package(Boost 1.74))
 EXPECT_BOOST_INSTALLED="1.88.0"   # what is installed (VTK 9.5.2 requires exactly 1.88.0)
@@ -182,7 +182,7 @@ probe_check Eigen3 "$EXPECT_EIGEN"
 probe_check OpenCV "$EXPECT_OPENCV"
 probe_check VTK "$EXPECT_VTK"
 probe_check onnxruntime "$EXPECT_ONNXRUNTIME"
-# Boost: project minimum 1.74; installed 1.88.0 (deviation, see README). Must be inside the prefix.
+# Boost: project minimum 1.74; installed 1.88.0 (deviation, see ENVIRONMENT.md). Must be inside the prefix.
 BOOST_LINE="$(probe_line Boost)"
 BOOST_VER="${BOOST_LINE%% *}"; BOOST_LOC="${BOOST_LINE#* }"
 if [[ -n "$BOOST_LINE" ]] && version_ge "$BOOST_VER" "$EXPECT_BOOST_MIN"; then
@@ -192,7 +192,7 @@ else
 fi
 check_eq "Boost (installed, VTK requires exactly this)" "$BOOST_VER" "$EXPECT_BOOST_INSTALLED"
 in_prefix "$BOOST_LOC" && pass "Boost located inside prefix" || fail "Boost located OUTSIDE prefix: ${BOOST_LOC}"
-info "DEVIATION: project asks Boost 1.74; installed Boost is ${BOOST_VER} (see README 'Known blockers')"
+info "DEVIATION: project asks Boost 1.74; installed Boost is ${BOOST_VER} (see ENVIRONMENT.md 'Known blockers')"
 DOX_LINE="$(probe_line Doxygen)"; info "Doxygen (find_package QUIET): ${DOX_LINE:-not found}"
 
 # ---- 4. OpenCV contents -------------------------------------------------------------------------
@@ -235,7 +235,7 @@ if [[ -x "$PROBE_BUILD/a2_smoke" ]]; then
         if grep -a -q 'FFMPEG:[[:space:]]*YES' "$OCV_INFO"; then pass "OpenCV build: FFMPEG backend YES"; else fail "OpenCV build: FFMPEG backend not enabled"; fi
         GUI_LINE="$(grep -a -m1 'GUI:' "$OCV_INFO" | sed 's/^ *//')"
         if grep -a -q 'GUI:[[:space:]]*NONE' "$OCV_INFO"; then
-            info "OpenCV build: ${GUI_LINE} -> cv::imshow/namedWindow are NOT available (headless build; see README)"
+            info "OpenCV build: ${GUI_LINE} -> cv::imshow/namedWindow are NOT available (headless build; see ENVIRONMENT.md)"
         else
             pass "OpenCV build: ${GUI_LINE}"
         fi
